@@ -4,9 +4,9 @@ import './memories.dart';
 import './memories_control.dart';
 
 class MemoriesManager extends StatefulWidget {
-  final List<String> startingMemories;
+  final Map<String, String> baseMemory;
 
-  MemoriesManager(this.startingMemories) {
+  MemoriesManager({this.baseMemory}) {
     print('[MemoManager Widget] Constructor');
   }
 
@@ -17,18 +17,26 @@ class MemoriesManager extends StatefulWidget {
 }
 
 class _MemoriesManagerState extends State<MemoriesManager> {
-  final List<String> _memories = [];
+  final List<Map<String, String>> _memories = [];
 
   @override
   void initState() {
     print('[MemoManager Widget] InitState');
-    _memories.addAll(widget.startingMemories);
+    if (widget.baseMemory != null) {
+      _memories.add(widget.baseMemory);
+    }
     super.initState();
   }
 
-  void _addMemory(String memory) {
+  void _addMemory(Map<String, String> memory) {
     setState(() {
       _memories.add(memory);
+    });
+  }
+
+  void _deleteMemory(int index) {
+    setState(() {
+      _memories.removeAt(index);
     });
   }
 
@@ -41,7 +49,9 @@ class _MemoriesManagerState extends State<MemoriesManager> {
           margin: EdgeInsets.all(10.0),
           child: MemoriesControl(_addMemory),
         ),
-        Memories(_memories)
+        Expanded(
+          child: Memories(_memories, deleteMemory: _deleteMemory),
+        )
       ],
     );
   }
